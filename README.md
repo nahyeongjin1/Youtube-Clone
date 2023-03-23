@@ -10,7 +10,7 @@ User Router
 /users/:id -> See User's Profile
 /users/logout -> Log Out
 /users/edit -> Edit My Profile
-/users/delete -> Delete My Profile
+/users/remove -> Remove My Profile
 
 Video Router
 /videos/:id -> See Video
