@@ -2,8 +2,13 @@ extends base
 include mixins/video
 
 block content 
-    h2 Welcome Here! You will see trending videos :)
-    each item in videos
-        +video(item)
-    else 
-        li Sorry, nothing found.
+    main
+        nav
+            ul 
+                li
+                    a(href="/videos/upload") Upload Video &rarr; 
+        h2 Welcome Here! You will see trending videos :)
+        each item in videos
+            +video(item)
+        else 
+            li Sorry, nothing found.
