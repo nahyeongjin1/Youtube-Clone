@@ -7,7 +7,12 @@
     "url": "git+https://github.com/nahyeongjin1/youtube-clone.git"
   },
   "scripts": {
-    "dev": "nodemon --exec babel-node src/server.js"
+    "dev": "nodemon --exec babel-node src/server.js",
+    "db-status": "sudo service mongod status",
+    "db-start": "sudo service mongod start",
+    "db-stop": "sudo service mongod stop",
+    "db-restart": "sudo service mongod restart",
+    "db-shell": "mongo"
   },
   "author": "NaHyeongjin",
   "license": "MIT",
