@@ -6,4 +6,6 @@ block content
         input(name="title", placeholder="Video Title", required, type="text", maxlength=50, value=video.title)
         input(name="description", placeholder="Description", required, type="text", minlength=10, value=video.description)
         input(name="hashtags", placeholder="Hashtags, separated by comma.", required, type="text", value=video.hashtags.join())
+        input(name="description", placeholder="Description", required, type="text", minlength=10, value=video.description)
+        input(name="hashtags", placeholder="Hashtags, separated by comma.", required, type="text", value=video.hashtags.join())
         input(type="submit", value="Save")
