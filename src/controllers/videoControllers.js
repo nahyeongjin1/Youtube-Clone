@@ -12,6 +12,7 @@ export const watch = async (req, res) => {
   }
   return res.render("watch", { pageTitle: video.title, video });
 };
+
 export const getEdit = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
@@ -54,4 +55,14 @@ export const postUpload = async (req, res) => {
       errorMessage,
     });
   }
+};
+
+export const getDelete = async (req, res) => {
+  const { id } = req.params;
+  const videoExists = await Video.exists({ _id: id });
+  if (!videoExists) {
+    return res.render("404", { pageTitle: "Video not found." });
+  }
+  await Video.findByIdAndDelete(id);
+  return res.redirect("/");
 };
