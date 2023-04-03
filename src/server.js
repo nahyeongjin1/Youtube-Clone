@@ -1,7 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 
-import globalRouter from "./routers/globalRouter";
+import rootRouter from "./routers/rootRouter";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
 
@@ -16,7 +16,7 @@ app.set("view engine", "pug");
 app.use(logger); // Show http method, url, status code, etc, on console
 app.use(express.urlencoded({ extended: true })); // makes express application understand req.body
 
-app.use("/", globalRouter);
+app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
 
