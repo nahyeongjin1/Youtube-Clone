@@ -1,5 +1,6 @@
 import bcrypt, { hash } from "bcrypt";
 import User from "../models/User";
+import fetch from "node-fetch";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: `Join` });
 export const postJoin = async (req, res) => {
