@@ -3,6 +3,7 @@ import User from "../models/User";
 import fetch from "node-fetch";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: `Join` });
+
 export const postJoin = async (req, res) => {
   const { name, email, username, password, password2, location } = req.body;
   const pageTitle = "Join";
@@ -35,9 +36,11 @@ export const postJoin = async (req, res) => {
     });
   }
 };
+
 export const getLogin = (req, res) => {
   return res.render("login", { pageTitle: `Login` });
 };
+
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
   const pageTitle = "Login";
@@ -71,6 +74,7 @@ export const startGithubLogin = (req, res) => {
   const finalUrl = `${baseUrl}?${params}`;
   return res.redirect(finalUrl);
 };
+
 export const finishGithubLogin = async (req, res) => {
   const baseUrl = "https://github.com/login/oauth/access_token";
   const config = {
@@ -98,7 +102,6 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(userData);
     const emailData = await (
       await fetch(`${apiUrl}/user/emails`, {
         headers: {
@@ -106,14 +109,35 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    const email = emailData.find((email) => email.primary && email.verified);
+    const email = emailData.find(
+      (email) => email.primary && email.verified
+    ).email;
     if (!email) {
       return res.redirect("/login");
+    }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      req.session.loggedIn = true;
+      req.session.user = existingUser;
+      return res.redirect("/");
+    } else {
+      const user = await User.create({
+        email,
+        username: userData.login,
+        password: "",
+        name: userData.name ? userData.name : "Anonymous",
+        location: userData.location,
+        socialLogin: true,
+      });
+      req.session.loggedIn = true;
+      req.session.user = user;
+      return res.redirect("/");
     }
   } else {
     return res.redirect("/login");
   }
 };
+
 export const see = (req, res) => res.send("See User's Profile");
 export const logout = (req, res) => res.send("Log Out");
 export const edit = (req, res) => res.send("Edit User");
