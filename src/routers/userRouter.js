@@ -7,14 +7,21 @@ import {
   finishGithubLogin,
   see,
 } from "../controllers/userControllers";
-import { memberOnlyMiddleware, publicOnlyMiddleware } from "../middlewares";
+import {
+  loggedInOnlyMiddleware,
+  loggedOutOnlyMiddleware,
+} from "../middlewares";
 
 const userRouter = express.Router();
 
-userRouter.get("/logout", memberOnlyMiddleware, logout);
-userRouter.route("/edit").all(memberOnlyMiddleware).get(getEdit).post(postEdit);
-userRouter.get("/github/start", publicOnlyMiddleware, startGithubLogin);
-userRouter.get("/github/finish", publicOnlyMiddleware, finishGithubLogin);
+userRouter.get("/logout", loggedInOnlyMiddleware, logout);
+userRouter
+  .route("/edit")
+  .all(loggedInOnlyMiddleware)
+  .get(getEdit)
+  .post(postEdit);
+userRouter.get("/github/start", loggedOutOnlyMiddleware, startGithubLogin);
+userRouter.get("/github/finish", loggedOutOnlyMiddleware, finishGithubLogin);
 userRouter.get("/:id", see);
 
 export default userRouter;

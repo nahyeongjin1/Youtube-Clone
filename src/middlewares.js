@@ -5,7 +5,7 @@ export const localsMiddleware = (req, res, next) => {
   next();
 };
 
-export const memberOnlyMiddleware = (req, res, next) => {
+export const loggedInOnlyMiddleware = (req, res, next) => {
   if (req.session.loggedIn) {
     return next();
   } else {
@@ -13,7 +13,7 @@ export const memberOnlyMiddleware = (req, res, next) => {
   }
 };
 
-export const publicOnlyMiddleware = (req, res, next) => {
+export const loggedOutOnlyMiddleware = (req, res, next) => {
   if (!req.session.loggedIn) {
     return next();
   } else {
