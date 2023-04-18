@@ -6,6 +6,8 @@ import {
   startGithubLogin,
   finishGithubLogin,
   see,
+  getChangePassword,
+  postChangePassword,
 } from "../controllers/userControllers";
 import {
   loggedInOnlyMiddleware,
@@ -20,6 +22,11 @@ userRouter
   .all(loggedInOnlyMiddleware)
   .get(getEdit)
   .post(postEdit);
+userRouter
+  .route("/change-password")
+  .all(loggedInOnlyMiddleware)
+  .get(getChangePassword)
+  .post(postChangePassword);
 userRouter.get("/github/start", loggedOutOnlyMiddleware, startGithubLogin);
 userRouter.get("/github/finish", loggedOutOnlyMiddleware, finishGithubLogin);
 userRouter.get("/:id", see);

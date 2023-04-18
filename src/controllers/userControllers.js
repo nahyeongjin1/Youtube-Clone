@@ -148,15 +148,47 @@ export const getEdit = (req, res) => {
 export const postEdit = async (req, res) => {
   const {
     session: {
-      user: { _id },
+      user: { _id, email: sessionEmail, username: sessionUsername },
     },
     body: { name, email, username, location },
   } = req;
-  await User.findByIdAndUpdate(_id, {
-    name,
-    email,
-    username,
-    location,
-  });
+
+  let searchParams = [];
+  if (sessionEmail !== email) {
+    searchParams.push({ email });
+  }
+  if (sessionUsername !== username) {
+    searchParams.push({ username });
+  }
+  if (searchParams.length > 0) {
+    const foundUser = await User.findOne({
+      $or: searchParams,
+    });
+    if (foundUser && foundUser._id.toString() !== _id) {
+      return res.status(400).render("edit-profile", {
+        pageTitle: "Edit Profile",
+        errorMessage: "This email/username is already taken :(",
+      });
+    }
+  }
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true }
+  );
+  req.session.user = updatedUser;
   return res.redirect(`/users/${_id}`);
+};
+
+export const getChangePassword = (req, res) => {
+  return res.render("change-password", { pageTitle: "Change Password" });
+};
+export const postChangePassword = (req, res) => {
+  // send notification
+  return res.redirect("/");
 };
