@@ -1,4 +1,4 @@
-import bcrypt, { hash } from "bcrypt";
+import bcrypt from "bcrypt";
 import User from "../models/User";
 import fetch from "node-fetch";
 
