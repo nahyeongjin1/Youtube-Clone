@@ -186,9 +186,41 @@ export const postEdit = async (req, res) => {
 };
 
 export const getChangePassword = (req, res) => {
+  if (req.session.user.socialLoginOnly) {
+    return res.redirect("/");
+  }
   return res.render("change-password", { pageTitle: "Change Password" });
 };
-export const postChangePassword = (req, res) => {
+export const postChangePassword = async (req, res) => {
   // send notification
-  return res.redirect("/");
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { oldPassword, newPassword, newPasswordConfirmation },
+  } = req;
+  const user = await User.findById(_id);
+  if (newPassword !== newPasswordConfirmation) {
+    return res.status(400).render("change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "The new password does not match the confirmation",
+    });
+  }
+  const ok = await bcrypt.compare(oldPassword, user.password);
+  if (!ok) {
+    return res.status(400).render("change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "The current password is incorrect",
+    });
+  }
+  if (oldPassword === newPassword) {
+    return res.status(400).render("change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "The old password equals new password",
+    });
+  }
+  user.password = newPassword;
+  await user.save();
+  req.session.destroy();
+  return res.redirect("/login");
 };
