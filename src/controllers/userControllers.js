@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import User from "../models/User";
+import Video from "../models/Video";
 import fetch from "node-fetch";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: `Join` });
@@ -141,9 +142,11 @@ export const see = async (req, res) => {
   if (!user) {
     return res.status(404).render("404", { pageTitle: "User not found" });
   }
+  const videos = await Video.find({ owner: user._id });
   return res.render("users/profile", {
     pageTitle: `${user.name}의 Profile`,
     user,
+    videos,
   });
 };
 
@@ -200,7 +203,7 @@ export const getChangePassword = (req, res) => {
   if (req.session.user.socialLoginOnly) {
     return res.redirect("/");
   }
-  return res.render("change-password", { pageTitle: "Change Password" });
+  return res.render("users/change-password", { pageTitle: "Change Password" });
 };
 export const postChangePassword = async (req, res) => {
   // send notification
@@ -212,20 +215,20 @@ export const postChangePassword = async (req, res) => {
   } = req;
   const user = await User.findById(_id);
   if (newPassword !== newPasswordConfirmation) {
-    return res.status(400).render("change-password", {
+    return res.status(400).render("users/change-password", {
       pageTitle: "Change Password",
       errorMessage: "The new password does not match the confirmation",
     });
   }
   const ok = await bcrypt.compare(oldPassword, user.password);
   if (!ok) {
-    return res.status(400).render("change-password", {
+    return res.status(400).render("users/change-password", {
       pageTitle: "Change Password",
       errorMessage: "The current password is incorrect",
     });
   }
   if (oldPassword === newPassword) {
-    return res.status(400).render("change-password", {
+    return res.status(400).render("users/change-password", {
       pageTitle: "Change Password",
       errorMessage: "The old password equals new password",
     });
