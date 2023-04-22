@@ -7,7 +7,7 @@ import {
   postUpload,
   getDelete,
 } from "../controllers/videoControllers";
-import { loggedInOnlyMiddleware } from "../middlewares";
+import { loggedInOnlyMiddleware, videoUpload } from "../middlewares";
 
 const videoRouter = express.Router();
 
@@ -25,6 +25,6 @@ videoRouter
   .route("/upload")
   .all(loggedInOnlyMiddleware)
   .get(getUpload)
-  .post(postUpload);
+  .post(videoUpload.single("video"), postUpload);
 
 export default videoRouter;
