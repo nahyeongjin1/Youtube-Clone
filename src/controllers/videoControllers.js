@@ -30,18 +30,32 @@ export const search = async (req, res) => {
 
 export const getEdit = async (req, res) => {
   const { id } = req.params;
+  const {
+    user: { _id: currentlyLoggedInUser },
+  } = req.session;
   const video = await Video.findById(id);
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video not found." });
   }
+  if (String(video.owner) !== String(currentlyLoggedInUser)) {
+    return res.status(403).redirect("/");
+  }
   return res.render("edit", { pageTitle: `Edit: ${video.title}`, video });
 };
 export const postEdit = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, hashtags } = req.body;
-  const videoExists = await Video.exists({ _id: id });
-  if (!videoExists) {
+  const {
+    params: { id },
+    body: { title, description, hashtags },
+    session: {
+      user: { _id: currentlyLoggedInUser },
+    },
+  } = req;
+  const video = await Video.findById(id);
+  if (!video) {
     return res.status(404).render("404", { pageTitle: "Video not found." });
+  }
+  if (String(video.owner) !== String(currentlyLoggedInUser)) {
+    return res.status(403).redirect("/");
   }
   await Video.findByIdAndUpdate(id, {
     title,
@@ -84,11 +98,25 @@ export const postUpload = async (req, res) => {
 };
 
 export const getDelete = async (req, res) => {
-  const { id } = req.params;
-  const videoExists = await Video.exists({ _id: id });
-  if (!videoExists) {
+  const {
+    params: { id },
+    session: {
+      user: { _id: currentlyLoggedInUser },
+    },
+  } = req;
+  const video = await Video.findById(id);
+  const user = await User.findById(currentlyLoggedInUser);
+  if (!video) {
     return res.status(404).render("404", { pageTitle: "Video not found." });
   }
+  if (!user) {
+    return res.status(404).render("404", { pageTitle: "User not found." });
+  }
+  if (String(video.owner) !== String(currentlyLoggedInUser)) {
+    return res.status(403).redirect("/");
+  }
   await Video.findByIdAndDelete(id);
+  user.videos.splice(user.videos.indexOf(id), 1);
+  user.save();
   return res.redirect("/");
 };
