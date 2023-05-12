@@ -17,6 +17,11 @@ app.set("views", `${process.cwd()}/src/views`);
 app.set("view engine", "pug");
 
 // middleware
+app.use((req, res, next) => {
+  res.header("Cross-Origin-Embedder-Policy", "require-corp");
+  res.header("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+});
 app.use(logger); // Show http method, url, status code, etc, on console
 app.use(express.urlencoded({ extended: true })); // makes express application understand req.body
 
