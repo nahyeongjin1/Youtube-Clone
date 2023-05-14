@@ -154,7 +154,9 @@ export const see = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  req.session.destroy();
+  req.session.user = null;
+  res.locals.loggedInUser = null;
+  req.session.loggedIn = false;
   req.flash("info", "Bye Bye");
   return res.redirect("/");
 };
@@ -240,7 +242,9 @@ export const postChangePassword = async (req, res) => {
   }
   user.password = newPassword;
   await user.save();
-  req.session.destroy();
+  req.session.user = null;
+  res.locals.loggedInUser = null;
+  req.session.loggedIn = false;
   req.flash("info", "Password updated");
   return res.redirect("/login");
 };

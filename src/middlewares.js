@@ -11,7 +11,7 @@ export const loggedInOnlyMiddleware = (req, res, next) => {
   if (req.session.loggedIn) {
     return next();
   } else {
-    req.flash("error", "Not authorized");
+    req.flash("error", "Please log in first.");
     return res.redirect("/login");
   }
 };
@@ -20,7 +20,7 @@ export const loggedOutOnlyMiddleware = (req, res, next) => {
   if (!req.session.loggedIn) {
     return next();
   } else {
-    req.flash("error", "Not authorized");
+    req.flash("error", "Already logged In.");
     return res.redirect("/");
   }
 };
