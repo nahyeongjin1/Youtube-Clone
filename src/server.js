@@ -25,6 +25,7 @@ app.use((req, res, next) => {
 });
 app.use(logger); // Show http method, url, status code, etc, on console
 app.use(express.urlencoded({ extended: true })); // makes express application understand req.body
+app.use(express.json());
 
 app.use(
   session({
