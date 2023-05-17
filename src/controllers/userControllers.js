@@ -74,7 +74,6 @@ export const startGithubLogin = (req, res) => {
   const finalUrl = `${baseUrl}?${params}`;
   return res.redirect(finalUrl);
 };
-
 export const finishGithubLogin = async (req, res) => {
   const baseUrl = "https://github.com/login/oauth/access_token";
   const config = {
@@ -134,6 +133,9 @@ export const finishGithubLogin = async (req, res) => {
     return res.redirect("/login");
   }
 };
+
+/**카카오 로그인 구현해야지 */
+export const startKakaoLogin = (req, res) => {};
 
 export const see = async (req, res) => {
   const { id } = req.params;

@@ -4,7 +4,7 @@ const form = document.getElementById("commentForm");
 const handleBtnClick = (event) => {
   event.preventDefault();
   const textarea = form.querySelector("textarea");
-  const comment = textarea.value;
+  const text = textarea.value;
   const videoId = videoContainer.dataset.id;
   if (text === "") return;
   fetch(`/api/videos/${videoId}/comment`, {
@@ -13,9 +13,10 @@ const handleBtnClick = (event) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      comment,
+      text,
     }),
   });
+  textarea.value = "";
 };
 
 if (form) {
