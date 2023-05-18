@@ -1,9 +1,10 @@
 const videoContainer = document.getElementById("videoContainer");
 const form = document.getElementById("commentForm");
 
-const addComment = (text) => {
+const addComment = (text, newCommentId) => {
   const videoComments = document.querySelector(".video__comments ul");
   const newComment = document.createElement("li");
+  newComment.dataset.id = newCommentId;
   newComment.className = "video__comment";
   const icon = document.createElement("i");
   icon.className = "fas fa-comment";
@@ -11,6 +12,9 @@ const addComment = (text) => {
   const span = document.createElement("span");
   span.innerText = ` ${text}`;
   newComment.appendChild(span);
+  const span2 = document.createElement("span");
+  span2.innerText = "❌";
+  newComment.appendChild(span2);
   videoComments.prepend(newComment);
 };
 
@@ -20,7 +24,7 @@ const handleBtnClick = async (event) => {
   const text = textarea.value;
   const videoId = videoContainer.dataset.id;
   if (text === "") return;
-  const { status } = await fetch(`/api/videos/${videoId}/comment`, {
+  const response = await fetch(`/api/videos/${videoId}/comment`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -29,9 +33,10 @@ const handleBtnClick = async (event) => {
       text,
     }),
   });
-  textarea.value = "";
-  if (status === 201) {
-    addComment(text);
+  if (response.status === 201) {
+    textarea.value = "";
+    const { newCommentId } = await response.json();
+    addComment(text, newCommentId);
   }
 };
 
