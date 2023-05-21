@@ -126,7 +126,8 @@ const handleVideoEnded = () => {
 playBtn.addEventListener("click", handlePlayBtnClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeInput);
-video.addEventListener("loadeddata", handleLoadedMetadata);
+video.addEventListener("canplay", handleLoadedMetadata);
+handleLoadedMetadata();
 video.addEventListener("timeupdate", handleTimeUpdate);
 timeline.addEventListener("change", handleTimelineChange);
 fullScreen.addEventListener("click", handleFullScreenBtnClick);
